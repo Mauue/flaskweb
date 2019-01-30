@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Flask{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+        {{ g.user['user_nickname'] }}
+</div>
+{% if not g.user['user_photo'] %}
+    <img src="/static/avatar/0.jpg" width="150" height="160" style="border: 5px solid #ffffff" ;>
+{% else %}
+    <img src="/static/avatar/{{ g.user['user_photo'] }}" width="150" height="150" style="border: 5px solid #ffffff" ;>
+{% endif %}
+<a href="avatar"><p>修改头像</p></a>
+{% endblock %}

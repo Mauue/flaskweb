@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Flask{% endblock %}
+
+
+{% block page_content %}
+    <p id="current" style="display: none">1</p>
+    <label class="sr-only" for="name">名称</label>
+    <form class="form-horizontal" role="form" id="form">
+        <div class="form-group">
+            <label for="name" style="float:left;padding: 5px">名称</label>
+            <input class="form-control" name="name" style="float:left;width: 400px">
+        </div>
+        <div class="form-group"style="float:left;">
+            <label style="float:left;padding: 5px">豆瓣评分</label>
+            <input class="form-control" name="dbscore1" style="width: 60px;float:left">
+            <label style="float:left;padding: 5px">~</label>
+            <input class="form-control" name="dbscore2" style="width: 60px;float:left">
+            <input type="checkbox" aria-label="..." name="dbnull" style="margin-top: 10px"checked>
+            <label for="dbnull" style="float:left;padding: 5px">包括空值</label>
+        </div>
+        <div class="form-group">
+            <label style="float:left;padding: 5px;margin-left: 50px">IMDB评分</label>
+            <input class="form-control" name="imdbscore1" style="width: 60px;float:left">
+            <label style="float:left;padding: 5px">~</label>
+            <input class="form-control" name="imdbscore2" style="width: 60px;float:left">
+            <input type="checkbox" aria-label="..." name="imdbnull" style="margin-top: 10px"checked>
+            <label for="imdbnull" style="float:left;padding: 5px" >包括空值</label>
+        </div>
+        <div class="form-group">
+            <select name="sort" >
+                <option value="0">默认排序</option>
+                <option value="1">按名称升序</option>
+                <option value="2">按名称降序</option>
+                <option value="3">按豆瓣评分升序</option>
+                <option value="4">按豆瓣评分降序</option>
+                <option value="5">按IMDB评分升序</option>
+                <option value="6">按IMDB评分降序</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default "id="button" >提交</button>
+        </div>
+        <input type="text" name="page" id="page" style="display: none;">
+
+    </form>
+    <p id="num">共{{ num }}条</p>
+<table class="table table-hover table-bordered" style="margin-top: 30px">
+				<thead>
+					<tr>
+						<th>							电影名						</th>
+						<th>							译名						</th>
+						<th>							豆瓣评分						</th>
+						<th>							IMDB评分						</th>
+					</tr>
+				</thead>
+				<tbody id="tbody">
+
+				</tbody>
+			</table>
+        <ul class="pagination">
+
+        <li><span id="prev">上一页</span></li>
+        <label>
+            <input type="text" id="page_input" class="px" size="2" title="输入页码，按回车快速跳转" value="1" style="background-color: white">
+            <span id='page_num'style="background-color: white"> / {{ num//20 + 1 }} 页</span>
+        </label>
+        <li><span id="next">下一页</span></li>
+
+        </ul>
+
+
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+
+    <script>
+
+    function submit(){
+        $.ajax({
+            type: "POST",
+            url:"search",
+            data:$('#form').serialize(),
+            dataType:"JSON",
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                $("#tbody").empty();
+                var i;
+                $("#num").text('共'+data[0]+'条');
+                $("#page_num").text("/ "+(parseInt(data[0]/20)+1)+"页")
+                var array = data[1];
+                for (i in array) {
+                    $("#tbody").append(
+                        "<tr>" +
+                        "<td>" + array[i][0] + "</td>" +
+                        "<td>" + array[i][1] + "</td>" +
+                        "<td>" + array[i][2] + "</td>" +
+                        "<td>" + array[i][3] + "</td>" +
+                        "</tr>");
+                }
+            }
+        })
+    }
+
+    $(document).ready(function(){
+        $("#page").val(1);
+        submit();
+    })
+    $("#page_input").keydown(function (event) {
+        if(event.keyCode==13) {
+            $("#page").val($("#page_input").val());
+            submit();
+        }
+
+    })
+
+    $("#form").submit(function(e){
+	    e.preventDefault();
+        $("#page").val(1);
+        $("#page_input").val(1);
+        submit();
+    });
+
+    $("#next").click(function () {
+        $("#page").val(parseInt($("#page").val())+1);
+        $("#page_input").val($("#page").val());
+        submit();
+    })
+
+
+    $("#prev").click(function () {
+        $("#page").val(parseInt($("#page").val())-1);
+        $("#page_input").val($("#page").val());
+        submit();
+    })
+
+
+
+</script>
+{% endblock %}

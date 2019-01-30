@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Flask{% endblock %}
+
+{% block page_content %}
+<div class="container">
+	<div class="row clearfix">
+          <div class="col-md-9 column" style="background-color: rgba(0,255,255,0.03)">
+        <p style="font-size: 22px">
+            {{ post['title'] }}
+        </p>
+        </div>
+        <div class="col-md-3 column" >
+            <table class="table" style="margin-bottom: 0px"><thead><tr>
+                    <th>查看</th>
+                    <th>回复</th>
+                    <th>收藏</th>
+                </tr></thead>
+                <tbody><tr>
+                    <th>N/A</th>
+                    <th>{{post['reply']}}</th>
+                    <th>N/A</th>
+                </tr></tbody></table>
+        </div>
+    </div>
+
+    <div class="row clearfix" style="border-top: 5px solid #00bbff;border-bottom:5px solid #ffffff;">
+        <div class="col-md-2 column" style="background-color: rgba(0,255,255,0.03);min-height: 500px;">
+            <h5 style="padding-bottom: 10px">
+                {{ post['username'] }}
+            </h5>
+            {% if not post['hphoto'] %}
+                <img src="/static/avatar/0.jpg" width="150" height="160" style="border: 5px solid #ffffff" ;>
+            {% else %}
+                <img src="/static/avatar/{{ post['username']+'.'+post['hphoto'] }}" width="150" height="160" style="border: 5px solid #ffffff" ;>
+            {% endif %}
+
+		</div>
+		<div class="col-md-10 column" style="padding-top: 10px">
+            <div style="border-bottom: 1px dashed gray">
+            <p>
+                发表于 {{ post['datetime'] }}
+                {% if g.user and(g.user['username']==post['username']or g.user['permission']>=100) %}
+                <span class="pull-right">
+                    <a href="/bbs/{{ post['tid'] }}/delete">删除</a>
+                </span>
+                {% endif %}
+            </p>
+            </div>
+            <br>
+			{{ post['text'] | safe }}
+		</div>
+	</div>
+
+    <br><br>
+    {% for reply in reply_list %}
+        <div class="row clearfix" style="border-bottom:5px solid #ffffff;">
+            <div class="col-md-2 column" style="background-color: rgba(0,255,255,0.03);min-height: 500px;">
+                <h5 style="padding-bottom: 10px">
+                    {{ reply['username'] }}
+                </h5>
+                {% if not reply['hphoto'] %}
+                    <img src="/static/avatar/0.jpg" width="150" height="160" style="border: 5px solid #ffffff" ;>
+                {% else %}
+                    <img src="/static/avatar/{{ reply['username']+'.'+reply['hphoto'] }}" width="150" height="160" style="border: 5px solid #ffffff" ;>
+                {% endif %}
+
+            </div>
+            <div class="col-md-10 column" style="padding-top: 10px">
+                <div style="border-bottom: 1px dashed gray">
+                <p>
+                    发表于 {{ reply['datetime'] }}
+                    <span class="pull-right">
+                        {{ reply['floor'] }}楼
+                    </span>
+                </p>
+                </div>
+                <br>
+                {{ reply['text'] | safe }}
+            </div>
+        </div>
+    {% endfor %}
+
+    <br><br>
+    <div class="row clearfix" >
+        <div class="col-md-2 column" style="background-color: rgba(0,255,255,0.03);height: 240px;">
+            {% if not g.user['hphoto'] %}
+                <img src="/static/avatar/0.jpg" width="150" height="160" style="margin-top:15px;border: 5px solid #ffffff" ;>
+            {% else %}
+                <img src="/static/avatar/{{ g.user['username']+'.'+g.user['hphoto'] }}" width="150" height="160" style="margin-top:15px;border: 5px solid #ffffff" ;>
+            {% endif %}
+
+		</div>
+		<div class="col-md-10 column" style="padding-top: 10px">
+            <form role="form" method="post">
+            <div class="form-group">
+                <textarea rows='6' cols='80' name="reply"  ></textarea>
+            </div>
+            <div class="form-group">
+            <button type="submit" class="btn btn-default">回复</button>
+            </div>
+        </form>
+		</div>
+
+	</div>
+</div>
+
+
+{% endblock %}

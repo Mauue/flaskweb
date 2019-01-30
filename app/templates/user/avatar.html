@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Flask{% endblock %}
+
+{% block page_content %}
+
+    {% if not g.user['user_photo'] %}
+        <img src="/static/avatar/0.jpg" width="150" height="160" style="border: 5px solid #ffffff" ;>
+    {% else %}
+        <img src="/static/avatar/{{ g.user['user_photo'] }}" width="150" height="150" style="border: 5px solid #ffffff" ;>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+    <input type="file" id="inputfile" name="avatar">
+    <button type="submit" class="btn btn-default">上传</button>
+    </form>
+
+{% endblock %}

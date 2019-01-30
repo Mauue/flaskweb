@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Flask{% endblock %}
+
+{% block page_content %}
+    <div class="container">
+	<div class="row clearfix">
+        <h3>
+            主题列表
+            <p class="text-right"><a href="/bbs/new"><small>新主题</small></a></p>
+        </h3>
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th style="width: 700px;">标题</th>
+                    <th>回复</th>
+                    <th>作者</th>
+                    <th>最后回复</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <th style="padding: 10px;"><a href="/bbs/{{ post['tid'] }}">{{ post['title'] }}</a></th>
+                    <th style="padding: 10px;">{{ post['reply'] }}</th>
+                    <th style="padding-bottom: 0px;"><dl style="margin-bottom: 0px">
+                        <dd><small>{{ post['username'] }}</small></dd>
+                        <dd><small>于{{ post['datetime'] }} 发表</small></dd>
+                    </dl></th>
+                    <th style="padding-bottom: 0px;"><dl style="margin-bottom: 0px">
+                        <dd><small>{{ post['last_reply_name'] }}</small></dd>
+                        <dd><small>于{{ post['last_reply_time'] }} 回复</small></dd>
+                    </dl></th>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <ul class="pagination">
+        {% if pagenum <= 10 %}
+            {% if pageid != 1 %}
+                <li><a href="/bbs/page/{{ pageid-1 }}">&laquo;</a></li>
+            {% endif %}
+            {% for i in range(pagenum) %}
+                {% if i + 1 == pageid %}
+                    <li class="active"><span>{{ i + 1 }}</span></li>
+                {% else %}
+                    <li><a href="/bbs/page/{{ i + 1 }}">{{ i + 1 }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if pageid != pagenum %}
+                <li><a href="/bbs/page/{{ pageid + 1 }}">&raquo;</a></li>
+            {% endif %}
+        {% else %}
+            {% if pageid != 1 %}
+                <li><a href="/bbs/page/{{ pageid-1 }}">&laquo;</a></li>
+            {% endif %}
+            {% if pageid < 6 %}
+                {% for i in range(8) %}
+                {% if i + 1 == pageid %}
+                    <li class="active"><span>{{ i + 1 }}</span></li>
+                {% else %}
+                    <li><a href="/bbs/page/{{ i + 1 }}">{{ i + 1 }}</a></li>
+                {% endif %}
+                {% endfor %}
+                <li><a href="/bbs/page/{{ pagenum }}">...{{ pagenum }}</a></li>
+            {% else %}
+                {% if pageid > pagenum - 6%}
+                    <li><a href="/bbs/page/1">1...</a></li>
+                    {% for i in range(pagenum-8,pagenum) %}
+                    {% if i + 1 == pageid %}
+                        <li class="active"><span>{{ i + 1 }}</span></li>
+                    {% else %}
+                        <li><a href="/bbs/page/{{ i + 1 }}">{{ i + 1 }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <li><a href="/bbs/page/1">1...</a></li>
+                    {% for i in range(pageid - 4 ,pageid + 4) %}
+                    {% if i + 1 == pageid %}
+                        <li class="active"><span>{{ i + 1 }}</span></li>
+                    {% else %}
+                        <li><a href="/bbs/page/{{ i + 1 }}">{{ i + 1 }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    <li><a href="/bbs/page/{{ pagenum }}">...{{ pagenum }}</a></li>
+                {% endif %}
+            {% endif %}
+            {% if pageid != pagenum %}
+                <li><a href="/bbs/page/{{ pageid + 1 }}">&raquo;</a></li>
+            {% endif %}
+        {% endif %}
+        </ul>
+        <br>
+	</div>
+</div>
+
+{% endblock %}

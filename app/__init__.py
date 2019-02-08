@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from config import config
 import os
+
 bootstrap = Bootstrap()
 def create_app(config_name='default'):
     app = Flask(__name__,instance_relative_config=True)
@@ -34,8 +35,8 @@ def create_app(config_name='default'):
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
     from .user import user as user_blueprint
     app.register_blueprint(user_blueprint, url_prefix='/user')
-    from .bbs import bbs as bbs_blueprint
-    app.register_blueprint(bbs_blueprint, url_prefix='/bbs')
+    # from .bbs import bbs as bbs_blueprint
+    # app.register_blueprint(bbs_blueprint, url_prefix='/bbs')
     from .blog import blog as blog_blueprint
     app.register_blueprint(blog_blueprint, url_prefix='/blog')
     from .movie import movie as movie_blueprint
